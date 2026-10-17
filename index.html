@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0b2d66" />
+  <title>클러치 알림 | 맞춤형 야구 알림 설정</title>
+  <style>
+    :root{--navy:#0b2d66;--blue:#1467f2;--pale:#edf4ff;--sky:#dbeaff;--text:#182840;--sub:#718198;--line:#e7edf4;--bg:#f3f6fb}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Pretendard,"Apple SD Gothic Neo","Malgun Gothic",system-ui,-apple-system,sans-serif;color:var(--text)}
+    body{background:linear-gradient(145deg,#e9f2ff,#f9fbff 56%,#e9f2ff);display:flex;justify-content:center;padding:26px 16px 40px}
+    button,select{font:inherit}button{cursor:pointer}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #83b2ff;outline-offset:3px}
+    .phone{width:min(100%,430px);background:white;border:1px solid #dae4f1;border-radius:29px;overflow:hidden;box-shadow:0 24px 72px #203c7230;position:relative}
+    header{background:var(--navy);color:#fff;padding:26px 26px 23px;position:relative;overflow:hidden}
+    header:after{content:"";width:190px;height:190px;border:30px solid #ffffff09;position:absolute;border-radius:50%;right:-83px;top:-115px}
+    .brand{font-size:12px;letter-spacing:.12em;font-weight:900;color:#a9cdff;margin-bottom:13px}
+    h1{font-size:26px;line-height:1.25;margin:0 0 7px;letter-spacing:-.05em}
+    .desc{font-size:13px;color:#d7e6ff;line-height:1.55;margin:0}
+    main{padding:21px 21px 22px}
+    .section-header{display:flex;align-items:center;gap:9px;margin:4px 0 12px}
+    .section-num{height:25px;width:25px;border-radius:8px;background:var(--pale);color:var(--blue);font-size:12px;font-weight:900;display:grid;place-items:center}
+    h2{font-size:16px;letter-spacing:-.04em;margin:0}
+    .sub{font-size:12px;color:var(--sub);margin:4px 0 13px;line-height:1.5}
+    .card{border:1px solid var(--line);border-radius:16px;background:#fff;padding:15px;box-shadow:0 4px 20px #152d5010}
+    .team-select-wrap{display:flex;align-items:center;gap:12px}
+    .team-symbol{border-radius:13px;display:grid;place-items:center;width:46px;height:46px;color:#fff;background:linear-gradient(130deg,#163c83,#267df3);font-weight:900;flex-shrink:0;font-size:13px}
+    .team-select-wrap label{flex:1;min-width:0}
+    .label{display:block;font-weight:800;font-size:13px;margin-bottom:6px}
+    select{width:100%;border:1px solid #dce5f1;background:#f8fbff;padding:11px 35px 11px 11px;border-radius:10px;font-size:14px;color:var(--navy);font-weight:800}
+    .section{margin-bottom:25px}
+    .option-list{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 4px 20px #152d5010}
+    .option{display:flex;align-items:center;gap:11px;padding:14px;cursor:pointer;min-height:76px}
+    .option:not(:last-child){border-bottom:1px solid #edf1f6}
+    .symbol{width:38px;height:38px;display:grid;place-items:center;flex-shrink:0;background:var(--pale);border-radius:11px;font-size:20px}
+    .option .copy{flex:1;min-width:0}.option b{display:block;font-size:14px;letter-spacing:-.03em;margin-bottom:4px}.option small{font-size:11px;color:var(--sub);line-height:1.4;display:block}
+    .option input{position:absolute;opacity:0;width:1px;height:1px}
+    .toggle{display:block;width:42px;height:24px;border-radius:24px;background:#cdd6e2;position:relative;transition:.2s;flex-shrink:0}
+    .toggle:after{content:"";width:18px;height:18px;position:absolute;left:3px;top:3px;background:#fff;border-radius:50%;box-shadow:0 2px 4px #092a3e22;transition:.2s}
+    .option input:checked + .toggle{background:var(--blue)}.option input:checked + .toggle:after{left:21px}
+    .option input:focus-visible + .toggle{outline:3px solid #83b2ff;outline-offset:3px}
+    .info{display:flex;gap:10px;align-items:flex-start;background:#eff5ff;border-radius:13px;padding:13px 14px;color:#3c5c87;font-size:12px;line-height:1.65}
+    .info svg{flex-shrink:0;margin-top:2px}
+    .primary{width:100%;border:0;background:var(--blue);color:white;padding:15px;border-radius:12px;font-size:15px;font-weight:850;box-shadow:0 8px 17px #1467f22c;transition:transform .1s}
+    .primary:active,.secondary:active{transform:scale(.99)}
+    .secondary{width:100%;border:1px solid #bdd4f8;background:#f1f6ff;color:var(--blue);padding:13px;border-radius:12px;font-size:14px;font-weight:850;margin-top:10px}
+    .hint{font-size:11px;line-height:1.55;color:var(--sub);text-align:center;margin:12px 5px 0}
+    #result{margin-top:15px;display:none;scroll-margin-top:12px}
+    #result.visible{display:block}
+    .success{padding:16px;border-radius:15px;background:#eaf8f0;border:1px solid #c6ead5;color:#165b3d}
+    .success h3{font-size:15px;margin:0 0 8px}.success p{margin:0;font-size:12px;line-height:1.65}
+    .saved-list{background:white;border:1px solid #dce8e1;padding:12px 13px;border-radius:10px;margin-top:12px;font-size:12px;white-space:pre-line;line-height:1.8;color:#243f3a}
+    .preview-panel{margin-top:14px;display:none;background:#fff;border:1px solid #d7e7ff;border-radius:14px;padding:13px}
+    .preview-panel.visible{display:block}
+    .preview-tag{font-size:11px;font-weight:800;color:var(--blue);margin-bottom:8px}.preview-panel strong{display:block;margin-bottom:6px;font-size:15px}.preview-panel p{font-size:12px;margin:0;color:var(--sub);line-height:1.6}
+    footer{border-top:1px solid #e9eef4;background:#fafcff;text-align:center;padding:17px 12px 19px;color:#8c9aac;font-size:11px}
+    .badge{display:inline-block;background:#eaf2ff;color:#1f62c4;font-size:10px;font-weight:850;letter-spacing:.04em;padding:5px 8px;border-radius:6px;margin-bottom:7px}
+    .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:#17365f;color:#fff;border-radius:10px;padding:13px 17px;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 9px 30px #12335f44;max-width:90%;font-size:12px;text-align:center;z-index:10}
+    .toast.visible{opacity:1;transform:translateX(-50%) translateY(0)}
+    @media(max-width:500px){body{padding:0;background:#fff}.phone{width:100%;border:0;border-radius:0;box-shadow:none;min-height:100vh}header{padding-top:35px}}
+  </style>
+</head>
+<body>
+ <div class="phone">
+  <header>
+   <div class="brand">⚾ CLUTCH ALERT · MVP</div>
+   <h1>내가 원하는 순간만<br/>놓치지 않도록</h1>
+   <p class="desc">응원팀과 알림 조건을 선택해 보세요.<br/>야구의 결정적 순간을 나에게 맞게!</p>
+  </header>
+  <main>
+   <section class="section" aria-labelledby="team-title">
+    <div class="section-header"><span class="section-num">01</span><h2 id="team-title">응원팀 선택</h2></div>
+    <div class="card team-select-wrap">
+      <div class="team-symbol" aria-hidden="true">KBO</div>
+      <label><span class="label">어느 팀을 응원하시나요?</span>
+       <select id="team" aria-label="응원팀 선택">
+        <option value="">응원팀을 선택해 주세요</option>
+        <option>삼성 라이온즈</option><option>LG 트윈스</option><option>두산 베어스</option><option>롯데 자이언츠</option><option>한화 이글스</option><option>KIA 타이거즈</option><option>SSG 랜더스</option><option>KT 위즈</option><option>NC 다이노스</option><option>키움 히어로즈</option>
+       </select>
+      </label>
+    </div>
+   </section>
+   <section class="section" aria-labelledby="notifications-title">
+    <div class="section-header"><span class="section-num">02</span><h2 id="notifications-title">알림 받고 싶은 순간</h2></div>
+    <p class="sub">원하는 순간을 여러 개 선택할 수 있어요.</p>
+    <div class="option-list">
+      <label class="option"><span class="symbol" aria-hidden="true">🎯</span><span class="copy"><b>득점 기회</b><small>주자가 득점권에 진루했을 때</small></span><input type="checkbox" name="alert" value="득점 기회" checked /><span class="toggle" aria-hidden="true"></span></label>
+      <label class="option"><span class="symbol" aria-hidden="true">🔄</span><span class="copy"><b>역전 기회</b><small>우리 팀에 역전 기회가 찾아왔을 때</small></span><input type="checkbox" name="alert" value="역전 기회" checked /><span class="toggle" aria-hidden="true"></span></label>
+      <label class="option"><span class="symbol" aria-hidden="true">⚾</span><span class="copy"><b>9회 접전</b><small>9회에 점수 차이가 2점 이하일 때</small></span><input type="checkbox" name="alert" value="9회 접전" checked /><span class="toggle" aria-hidden="true"></span></label>
+      <label class="option"><span class="symbol" aria-hidden="true">💥</span><span class="copy"><b>홈런 발생</b><small>응원팀 선수가 홈런을 쳤을 때</small></span><input type="checkbox" name="alert" value="홈런 발생" /><span class="toggle" aria-hidden="true"></span></label>
+      <label class="option"><span class="symbol" aria-hidden="true">🏁</span><span class="copy"><b>경기 종료</b><small>경기 종료와 최종 결과</small></span><input type="checkbox" name="alert" value="경기 종료" /><span class="toggle" aria-hidden="true"></span></label>
+    </div>
+   </section>
+   <section class="section">
+    <div class="info">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2874d5" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 11v6M12 7h.01"/></svg>
+      <span><b>현재는 기능 검증용 MVP입니다.</b><br/>선택한 설정은 이 기기의 브라우저에만 저장됩니다. 실제 경기 자동 감지나 알림 발송 기능은 아직 없어요. 추후 테스트에서는 팀원이 카카오톡으로 수동 알림을 전달합니다.</span>
+    </div>
+   </section>
+   <button class="primary" id="save" type="button">알림 설정 저장하기</button>
+   <p class="hint">설정 저장은 무료입니다. 이름·연락처를 입력받지 않습니다.</p>
+   <div id="result" aria-live="polite">
+    <div class="success">
+      <h3>✓ 알림 설정을 저장했어요!</h3>
+      <p>아래 결과를 복사해서 5조 팀원에게 보내주세요. 이 버튼을 누르지 않으면 설정값은 팀원에게 자동 전달되지 않습니다.</p>
+      <div class="saved-list" id="saved-summary"></div>
+    </div>
+    <button class="secondary" id="copy" type="button">📋 설정 결과 복사하기</button>
+    <button class="secondary" id="preview" type="button">🔔 알림 화면 미리 보기 (예시)</button>
+    <div id="preview-panel" class="preview-panel">
+      <div class="preview-tag">알림 예시 · 실제 경기 정보 아님</div>
+      <strong id="preview-title">역전 찬스가 왔어요!</strong>
+      <p id="preview-description">8회말 1사 만루! 응원팀의 결정적 순간을 확인해 보세요.</p>
+    </div>
+   </div>
+  </main>
+  <footer><span class="badge">5조 · 글로벌리빙랩 프로젝트</span><br/>클러치 알림 — 결정적 순간을 놓치지 않게</footer>
+ </div>
+ <div class="toast" id="toast" role="status" aria-live="polite"></div>
+ <script>
+ (function(){
+  const storageKey='clutch-alert-mvp-v1';
+  const team=document.getElementById('team');
+  const choices=Array.from(document.querySelectorAll('input[name="alert"]'));
+  const result=document.getElementById('result');
+  const summary=document.getElementById('saved-summary');
+  const previewPanel=document.getElementById('preview-panel');
+  let savedText='';
+  const toast=document.getElementById('toast');
+  let timeout;
+  function notify(message){toast.textContent=message;toast.classList.add('visible');clearTimeout(timeout);timeout=setTimeout(()=>toast.classList.remove('visible'),3200)}
+  function getCode(){
+    let code=localStorage.getItem('clutch-alert-test-code');
+    if(!code){code='T-'+Math.random().toString(36).slice(2,8).toUpperCase();localStorage.setItem('clutch-alert-test-code',code)}
+    return code;
+  }
+  try{
+    const saved=JSON.parse(localStorage.getItem(storageKey)||'null');
+    if(saved){team.value=saved.team||'';choices.forEach(choice=>{choice.checked=(saved.alerts||[]).includes(choice.value)})}
+  }catch(e){ /* 저장된 데이터 오류는 무시하고 초기 상태 사용 */ }
+  document.getElementById('save').addEventListener('click',()=>{
+    const selected=choices.filter(i=>i.checked).map(i=>i.value);
+    if(!team.value){notify('먼저 응원팀을 선택해 주세요.');team.focus();return}
+    if(selected.length===0){notify('알림 유형을 하나 이상 선택해 주세요.');choices[0].focus();return}
+    const current={team:team.value,alerts:selected,savedAt:new Date().toLocaleString('ko-KR',{hour12:false}),participantCode:getCode()};
+    try{localStorage.setItem(storageKey,JSON.stringify(current))}catch(e){notify('이 브라우저에서는 저장이 제한되어 있어요. 다른 브라우저를 이용해 주세요.');return}
+    savedText='[클러치 알림 MVP 테스트 결과]\n참여 코드: '+current.participantCode+'\n응원팀: '+current.team+'\n선택한 알림: '+current.alerts.join(', ')+'\n설정 완료 시각: '+current.savedAt;
+    summary.textContent=savedText;
+    result.classList.add('visible');previewPanel.classList.remove('visible');
+    result.scrollIntoView({behavior:'smooth',block:'nearest'});
+  });
+  document.getElementById('copy').addEventListener('click',async()=>{
+    if(!savedText)return;
+    try{
+      if(navigator.clipboard && window.isSecureContext){await navigator.clipboard.writeText(savedText)}
+      else{
+        const temp=document.createElement('textarea');temp.value=savedText;temp.setAttribute('readonly','');temp.style.position='fixed';temp.style.opacity='0';document.body.appendChild(temp);temp.select();if(!document.execCommand('copy'))throw new Error('복사 실패');temp.remove();
+      }
+      notify('설정 결과를 복사했어요. 팀원에게 메시지로 보내주세요!');
+    }catch(e){notify('자동 복사가 어렵습니다. 위 설정 결과를 길게 눌러 복사해 주세요.')}
+  });
+  document.getElementById('preview').addEventListener('click',()=>{
+    if(!savedText)return;
+    const selected=choices.filter(i=>i.checked).map(i=>i.value);
+    const item=selected.includes('역전 기회')?'역전 기회':selected[0];
+    document.getElementById('preview-title').textContent=team.value+' · '+item+'!';
+    document.getElementById('preview-description').textContent='[가상 경기 상황] 원하는 순간에 이런 형태로 알림을 받을 수 있어요. 실제 알림 발송 기능은 아직 제공하지 않습니다.';
+    previewPanel.classList.toggle('visible');
+  });
+ })();
+ </script>
+</body>
+</html>
